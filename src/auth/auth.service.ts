@@ -41,31 +41,23 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpDto): Promise<{ token: string }> {
-    const {
-      firstName,
-      lastName,
-      photo,
-      birthDate,
-      description,
-      email,
-      password,
-    } = signUpDto;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await this.usersRepository.create({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-      photo,
-      birthDate,
-      description,
-      role: UserRole.Student,
+    const dbUser = await this.usersRepository.findOne({
+      where: { email: signUpDto.email },
     });
-    console.log(user);
+    console.log(dbUser);
+    if (dbUser) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
 
-    await this.usersRepository.save(user);
+    console.log(signUpDto.subjects);
+
+    const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
+    const user = await this.usersRepository.save({
+      ...signUpDto,
+      role: UserRole.Student,
+      password: hashedPassword,
+      subjects: signUpDto.subjects,
+    });
 
     const token = this.jwtService.sign({ id: user.id });
 

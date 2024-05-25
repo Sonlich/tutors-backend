@@ -29,7 +29,7 @@ export class Subject {
   name: SubjectName;
 
   @Column()
-  pricePerLesson: number;
+  price: number;
 
   @Column()
   experienceSince: Date;

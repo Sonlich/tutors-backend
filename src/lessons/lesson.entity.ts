@@ -8,6 +8,12 @@ import {
 import { User } from '../users/user.entity';
 import { Subject } from '../subjects/subject.entity';
 
+export enum LessonStatus {
+  WaitingApproval = 'WaitingApproval',
+  Scheduled = 'Scheduled',
+  Canceled = 'Canceled',
+}
+
 @Entity()
 export class Lesson {
   @PrimaryGeneratedColumn()
@@ -26,11 +32,15 @@ export class Lesson {
   subject: Subject;
 
   @Column()
-  lessonDate: Date;
+  dateStart: Date;
 
   @Column()
-  startTime: string;
+  dateFinish: Date;
 
-  @Column()
-  endTime: string;
+  @Column({
+    type: 'enum',
+    enum: LessonStatus,
+    default: LessonStatus.WaitingApproval,
+  })
+  status: LessonStatus;
 }

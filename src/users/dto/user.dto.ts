@@ -21,7 +21,7 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  photo: string;
+  profilePhoto: string;
 
   @ApiProperty({ default: new Date().toString() })
   @IsNotEmpty()
@@ -44,6 +44,7 @@ export class CreateUserDto {
   password: string;
 
   @IsArray()
+  @ApiProperty({ default: RolesEnum.Student })
   @IsEnum(RolesEnum, { each: true })
-  public readonly roles?: RolesEnum[];
+  roles?: RolesEnum[];
 }

@@ -6,9 +6,13 @@ import { Lesson } from './lessons/lesson.entity';
 import { Subject } from './subjects/subject.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from './auth/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { SubjectsModule } from './subjects/subjects.module';
+import { LessonsModule } from './lessons/lessons.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -19,15 +23,21 @@ import { APP_GUARD } from '@nestjs/core';
       username: 'postgres',
       password: 'postgres',
       database: 'tutors',
-      entities: [User, Lesson, Subject],
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
+    MulterModule.register({
+      dest: './upload',
+    }),
+    ImageModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
+    SubjectsModule,
+    LessonsModule,
   ],
   controllers: [AppController],
   providers: [
